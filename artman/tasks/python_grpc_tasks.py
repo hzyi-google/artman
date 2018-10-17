@@ -232,7 +232,7 @@ class PythonMoveProtosTask(task_base.TaskBase):
             RuntimeError: If the subdirectory is not found.
         """
         for path, dirs, files in os.walk(haystack):
+            logger.info("dirs" + dirs)
             if needle in dirs:
-                logger.info("dirs" + dirs)
                 return path
         raise RuntimeError('Path %s not found in %s.' % (needle, haystack))
