@@ -24,7 +24,7 @@ from ruamel import yaml
 
 from artman.utils import protoc_utils
 from artman.tasks import task_base
-
+from artman.utils.logger import logger
 
 class PythonChangePackageTask(task_base.TaskBase):
     """Copies source protos to a package that meets Python convention"""
@@ -233,5 +233,6 @@ class PythonMoveProtosTask(task_base.TaskBase):
         """
         for path, dirs, files in os.walk(haystack):
             if needle in dirs:
+                logger.info("dirs" + dirs)
                 return path
         raise RuntimeError('Path %s not found in %s.' % (needle, haystack))
