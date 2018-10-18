@@ -238,6 +238,7 @@ class PythonMoveProtosTask(task_base.TaskBase):
                 logger.info("dir: " + dire)
             for filer in files:
                 if filer.endswith("_pb2.py"):
+                    logger.info(path)
                     return path
                 logger.info("file: " + filer)
 
