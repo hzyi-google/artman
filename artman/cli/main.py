@@ -65,6 +65,7 @@ def main(*args):
         try:
             pipeline = pipeline_factory.make_pipeline(pipeline_name,
                                                       **pipeline_kwargs)
+            logger.info(pipeline)
             # Hardcoded to run pipeline in serial engine, though not necessarily.
             engine = engines.load(
                 pipeline.flow, engine='serial', store=pipeline.kwargs)
