@@ -70,7 +70,9 @@ def main(*args):
             logger.info(pipeline.kwargs)
             engine = engines.load(
                 pipeline.flow, engine='serial', store=pipeline.kwargs)
+            logger.info(engine)
             engine.run()
+            logger.info(engine)
         except:
             logger.error(traceback.format_exc())
             sys.exit(32)
