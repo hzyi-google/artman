@@ -79,7 +79,7 @@ class PythonChangePackageTask(task_base.TaskBase):
         new_proto_dir = os.path.join(tmpdir, 'proto')
         new_src_path = set()
         new_import_path = [new_proto_dir]
-
+        logger.info("copying things!!!")
         self._copy_and_transform_directories(
             src_proto_path, new_proto_dir, common_protos, paths=new_src_path)
         self._copy_and_transform_directories(
