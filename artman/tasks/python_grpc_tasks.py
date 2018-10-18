@@ -252,7 +252,7 @@ class PythonMoveProtosTask(task_base.TaskBase):
             for dire in dirs:
                 logger.info("dir: " + dire)
             for filer in files:
-                if filer.endswith(".proto"):
+                if filer.endswith(".py"):
                     return path
                 logger.info("file: " + filer)
             if needle in dirs:
