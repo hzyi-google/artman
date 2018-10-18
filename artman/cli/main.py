@@ -67,6 +67,7 @@ def main(*args):
                                                       **pipeline_kwargs)
             logger.info(pipeline)
             # Hardcoded to run pipeline in serial engine, though not necessarily.
+            logger.info(pipeline.kwargs)
             engine = engines.load(
                 pipeline.flow, engine='serial', store=pipeline.kwargs)
             engine.run()
