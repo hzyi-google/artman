@@ -208,7 +208,7 @@ class PythonMoveProtosTask(task_base.TaskBase):
         # Determine the appropriate source and target directory.
         # We can get this by drilling in to the GAPIC artifact until we get to
         # a "gapic" directory.
-        src = os.path.join(self._get_proto_path(grpc_code_dir), '*')
+        src = os.path.join(self._get_proto_path(grpc_code_dir), '\*')
         target = self._get_subdir_path(
             os.path.join(gapic_code_dir, 'google'),
             'gapic',
