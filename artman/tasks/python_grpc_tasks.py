@@ -252,7 +252,10 @@ class PythonMoveProtosTask(task_base.TaskBase):
             for dire in dirs:
                 logger.info("dir: " + dire)
             for filer in files:
+                if filer.endswith(".proto"):
+                    return path
                 logger.info("file: " + filer)
-            # if needle in dirs:
-            #     return path
+            if needle in dirs:
+                return path
+
         raise RuntimeError('Path %s not found in %s.' % (needle, haystack))
