@@ -109,6 +109,10 @@ class PythonChangePackageTask(task_base.TaskBase):
         Works with arbitrary separator (e.g., '/' for import statements,
         '.' for proto package statements, os.path.sep for filenames)
         """
+        logger.info("pkg")
+        logger.info(pkg)
+        logger.info("common_protos")
+        logger.info(common_protos)
         if sep != '.' and pkg.endswith('.proto'):
             dotted = pkg[:-6].replace(sep, '.')
             suffix = '.proto'
