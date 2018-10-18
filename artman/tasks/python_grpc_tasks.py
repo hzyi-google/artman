@@ -208,14 +208,15 @@ class PythonMoveProtosTask(task_base.TaskBase):
         # Determine the appropriate source and target directory.
         # We can get this by drilling in to the GAPIC artifact until we get to
         # a "gapic" directory.
-        src = self._get_subdir_path(grpc_code_dir, 'proto')
+        src = os.path.join(self._get_proto_path(grpc_code_dir), '*')
         target = self._get_subdir_path(
             os.path.join(gapic_code_dir, 'google'),
             'gapic',
         )
+        self.exec_command(['mkdir', target, 'proto'])
 
         # Move the contents into the GAPIC directory.
-        self.exec_command(['mv', os.path.join(src, 'proto'), target])
+        self.exec_command(['mv', src, target])
 
         # Create an __init__.py file in the proto directory.
         # This is necessary for Python 2.7 compatibility.
@@ -229,6 +230,19 @@ class PythonMoveProtosTask(task_base.TaskBase):
         # Clear out the grpc_code_dir, so future tasks perceive it as
         # not being a thing anymore.
         return {'grpc_code_dir': None}
+
+    def _get_proto_path(self, haystack):
+        for path, dirs, files in os.walk(haystack):
+            logger.info("dirs: ")
+            for dire in dirs:
+                logger.info("dir: " + dire)
+            for filer in files:
+                if filer.endswith("_pb2.py"):
+                    return path
+                logger.info("file: " + filer)
+
+        raise RuntimeError('Path %s not found in %s.' % (needle, haystack))
+
 
     def _get_subdir_path(self, haystack, needle):
         """Return the subpath which contains the ``needle`` directory.
