@@ -165,14 +165,20 @@ class PythonChangePackageTask(task_base.TaskBase):
             protos = list(protoc_utils.find_protos([path], []))
             for proto in protos:
                 src_base_dirs = self._extract_base_dirs(proto)
+                logger.info("src_base_dirs")
+                logger.info(src_base_dirs)
                 sub_new_src = os.path.join(
                     destination_directory,
                     self._transform(
                         src_base_dirs, os.path.sep, common_protos))
+                logger.info("sub_new_src")
+                logger.info(sub_new_src)
                 if paths is not None:
                     paths.add(sub_new_src)
 
                 dest = os.path.join(sub_new_src, os.path.basename(proto))
+                logger.info("dest")
+                logger.info(dest)
                 if not os.path.exists(dest):
                     self.exec_command(['mkdir', '-p', sub_new_src])
                 self._copy_proto(
