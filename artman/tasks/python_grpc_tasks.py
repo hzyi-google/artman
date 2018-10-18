@@ -213,7 +213,7 @@ class PythonMoveProtosTask(task_base.TaskBase):
             os.path.join(gapic_code_dir, 'google'),
             'gapic',
         )
-        self.exec_command(['mkdir', target, 'proto'])
+        self.exec_command(['mkdir', os.path.join(target, 'proto')])
 
         # Move the contents into the GAPIC directory.
         self.exec_command(['mv', src, target])
