@@ -20,6 +20,7 @@ from artman.tasks import package_metadata_tasks
 from artman.tasks import protoc_tasks
 from artman.tasks import python_grpc_tasks
 from artman.utils import task_utils
+from artman.utils.logger import logger
 
 
 class GrpcClientPipeline(code_gen.CodeGenerationPipelineBase):
@@ -80,6 +81,7 @@ class ProtoGenTaskFactory(code_gen.TaskFactoryBase):
         return tasks
 
     def _get_grpc_codegen_tasks_python(self, **kwargs):
+        logger.info("creating tasks!")
         tasks = [python_grpc_tasks.PythonChangePackageTask]
         tasks.append(protoc_tasks.ProtoDescGenTask)
         if self.gen_code:
