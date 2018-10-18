@@ -156,6 +156,7 @@ class ProtoAndGrpcCodeGenTask(ProtocCodeGenTaskBase):
                 organization_name, gapic_yaml, final_src_proto_path=None,
                 final_import_proto_path=None, excluded_proto_path=[]):
         logger.info("hhhrrr");
+        logger.info(src_proto_path)
         logger.info(final_src_proto_path)
         pkg_dir = protoc_utils.prepare_grpc_pkg_dir(
             output_dir, api_name, api_version, organization_name, language)
