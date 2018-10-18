@@ -215,7 +215,7 @@ class PythonMoveProtosTask(task_base.TaskBase):
         )
 
         # Move the contents into the GAPIC directory.
-        self.exec_command(['mv', os.path.join(src), target])
+        self.exec_command(['mv', os.path.join(src, 'proto'), target])
 
         # Create an __init__.py file in the proto directory.
         # This is necessary for Python 2.7 compatibility.
@@ -252,8 +252,8 @@ class PythonMoveProtosTask(task_base.TaskBase):
             for dire in dirs:
                 logger.info("dir: " + dire)
             for filer in files:
-                if filer.endswith(".py"):
-                    return path
+                # if filer.endswith(".py"):
+                #     return path
                 logger.info("file: " + filer)
             if needle in dirs:
                 return path
