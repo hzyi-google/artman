@@ -50,7 +50,7 @@ def test_move_protos():
             _gpp.side_effect = ('grpc_path/foo/bar/proto',)
             with mock.patch.object(task, '_get_subdir_path') as _gsp:
                 _gsp.side_effect = (
-                    'gapic_path/foo/bar/proto',
+                    'gapic_path/foo/bar/',
                 )
                 assert task.execute('grpc_path', 'gapic_path') == {
                     'grpc_code_dir': None,
@@ -73,7 +73,7 @@ def test_move_protos():
         assert mv[1] == ([
             'mv',
             'grpc_path/foo/bar/proto',
-            'gapic_path/foo/bar',
+            'gapic_path/foo/bar/proto',
         ],)
         assert touch[1] == (['touch', 'gapic_path/foo/bar/proto/__init__.py'],)
         assert rm[1] == (['rm', '-rf', 'grpc_path'],)
