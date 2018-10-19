@@ -47,6 +47,7 @@ def test_move_protos():
     task = python_grpc_tasks.PythonMoveProtosTask()
     with mock.patch.object(task, 'exec_command') as exec_command:
         with mock.patch.object(task, '_get_proto_path') as _gpp:
+            _gpp.side_effect = ('grpc_path/foo/bar/proto',)
             with mock.patch.object(task, '_get_subdir_path') as _gsp:
                 _gsp.side_effect = (
                     'grpc_path/foo/bar',
