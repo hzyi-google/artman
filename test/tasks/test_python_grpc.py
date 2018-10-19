@@ -55,7 +55,8 @@ def test_move_protos():
                 assert task.execute('grpc_path', 'gapic_path') == {
                     'grpc_code_dir': None,
                 }
-
+                # Inspect the calls to _get_proto_path to make sure we are looking
+                # for the paths we expect.
                 assert _gpp.call_count == 1
                 proto_call = _gpp.mock_calls[0]
                 assert proto_call[1] == ('grpc_path',)
