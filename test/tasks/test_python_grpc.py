@@ -58,7 +58,7 @@ def test_move_protos():
 
                 assert _gpp.call_count == 1
                 proto_call = _gpp.mock_calls[0]
-                assert proto_call[1] == ('grpc_path')
+                assert proto_call[1] == ('grpc_path',)
                 # Inspect the calls to _get_subdir_path to make sure we are looking
                 # for the paths we expect.
                 assert _gsp.call_count == 1
