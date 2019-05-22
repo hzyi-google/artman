@@ -105,7 +105,7 @@ class GapicCodeGenTask(task_base.TaskBase):
                 gapic_code_dir, api_name, api_version, organization_name,
                 aspect, generator_args):
         existing = glob.glob('%s/*' % gapic_code_dir)
-        if existing:
+        if "java" not in gapic_code_dir and existing:
             self.exec_command(['rm', '-r'] + existing)
         gapic_args = ['--gapic_yaml=' + os.path.abspath(gapic_yaml)]
         args = [
