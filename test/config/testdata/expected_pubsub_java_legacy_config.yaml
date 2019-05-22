@@ -20,5 +20,5 @@ common:
   - name: google-iam-v1
     proto_path: google/iam/v1
 java:
-  gapic_code_dir: /tmp/output/java/gapic-google-cloud-pubsub-v1
+  gapic_code_dir: /tmp/output/java
   release_level: beta
