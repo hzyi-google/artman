@@ -156,8 +156,9 @@ RUN git clone --single-branch https://github.com/googleapis/googleapis \
   && rm -rf /googleapis/.git/
 
 # Install toolkit.
-RUN git clone --single-branch https://github.com/googleapis/gapic-generator toolkit \
+RUN git clone https://github.com/googleapis/gapic-generator toolkit \
   && cd toolkit/ \
+  && git fetch \
   && git checkout java-packaging \
   && git checkout $GAPIC_GENERATOR_HASH \
   && ./gradlew fatJar createToolPaths \
