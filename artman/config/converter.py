@@ -79,6 +79,8 @@ def _calculate_rel_gapic_output_dir(language, api_name, api_version):
     TODO(ethanbao): This part can become part of normalization step when gapic
     ouput dir becomes configurable. This logic doesn't work for non-cloud.
     """
+    # We output all code to the top-level 'java/' directory, but renames
+    # sub-directories to the correct package names in GapicCodeGenTask.
     if language == 'java':
         return 'java'
     elif language == 'csharp':
