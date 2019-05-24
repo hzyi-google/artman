@@ -138,10 +138,6 @@ class GapicCodeGenTask(task_base.TaskBase):
         self.exec_command(
             task_utils.gapic_gen_task(toolkit_path, [gapic_artifact] + args))
 
-        for dirpath, dnames, fnames in os.walk("./"):
-            for f in fnames:
-                print (os.path.join(dirpath, f))
-
         # Change Java gapics and samples to the correct directory names 
         if language == 'java':
             abs_code_dir = os.path.abspath(gapic_code_dir)
