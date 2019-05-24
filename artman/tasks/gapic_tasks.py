@@ -105,7 +105,11 @@ class GapicCodeGenTask(task_base.TaskBase):
                 gapic_code_dir, api_name, api_version, organization_name,
                 aspect, generator_args):
         existing = glob.glob('%s/*' % gapic_code_dir)
-        if 'java' not in gapic_code_dir and existing:
+
+        # We put generated java code in a flattened directory `java/`. We don't clean
+        # up the output directory so that when generating multiple libraries the previously
+        # generated code will not be deleted
+        if language != 'java' and existing:
             self.exec_command(['rm', '-r'] + existing)
         gapic_args = ['--gapic_yaml=' + os.path.abspath(gapic_yaml)]
         args = [
@@ -133,6 +137,22 @@ class GapicCodeGenTask(task_base.TaskBase):
 
         self.exec_command(
             task_utils.gapic_gen_task(toolkit_path, [gapic_artifact] + args))
+
+        # Change Java gapics and samples to the correct directory names 
+        if language == 'java':
+            abs_code_dir = os.path.abspath(gapic_code_dir)
+
+            os.rename(
+                os.path.join(abs_code_dir, 'gapic'),
+                os.path.join(
+                    abs_code_dir,
+                    'gapic-google-cloud-{}-{}'.format(api_name, api_version)))
+            
+            os.rename(
+                os.path.join(abs_code_dir, 'samples'),
+                os.path.join(
+                    abs_code_dir,
+                    'samples-google-cloud-{}-{}'.format(api_name, api_version)))
 
         return gapic_code_dir
 
