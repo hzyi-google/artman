@@ -148,11 +148,14 @@ class GapicCodeGenTask(task_base.TaskBase):
                     abs_code_dir,
                     'gapic-google-cloud-{}-{}'.format(api_name, api_version)))
             
-            os.rename(
-                os.path.join(abs_code_dir, 'samples'),
-                os.path.join(
-                    abs_code_dir,
-                    'samples-google-cloud-{}-{}'.format(api_name, api_version)))
+            # samples are optional
+            abs_sample_dir = os.path.join(abs_code_dir, 'samples')
+            if os.path.isdir(abs_sample_dir):
+                os.rename(
+                    abs_sample_dir,
+                    os.path.join(
+                        abs_code_dir,
+                        'samples-google-cloud-{}-{}'.format(api_name, api_version)))
 
         return gapic_code_dir
 
