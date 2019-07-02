@@ -233,6 +233,8 @@ workflows:
           filters: *all_commits
       - golden_and_smoke_tests:
           filters: *all_commits
+      - samplegen_smoke_test:
+          filters: *all_commits
       - build_and_release_docker_image:
           requires:
             - unit-python2.7
