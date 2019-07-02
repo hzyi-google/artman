@@ -74,6 +74,27 @@ jobs:
       - store_artifacts:
           path: /tmp/smoketest.log
 
+  samplegen_smoke_test:
+    working_directory: /usr/src/artman
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - *checkout_artman
+      - setup_remote_docker
+      - *restore_artman_cache
+      - *load_build_and_save_artman_image
+      - *save_artman_cache
+      - run:
+          name: Check samples are generated for selected APIs
+          command: |
+            EXIT_STATUS=0
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/language-python;artman --local --output_dir /tmp/language-python --config=google/cloud/language/artman_language_v1.yaml --root-dir=/googleapis generate python_gapic --generator-args='--dev_samples'" || EXIT_STATUS=$?
+            docker find /tmp/language-python/python/language-v1/samples/v1  mindepth 1 || read || EXIT_STATUS=$?
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/talent-php;artman --local --output_dir /tmp/talent-php --config=google/cloud/talent/artman_talent_v4beta1.yaml --root-dir=/googleapis generate php_gapic" --generator-args='--dev_samples'|| EXIT_STATUS=$?
+            docker find /tmp/language-python/python/language-v1/samples/v1  mindepth 1 || read || EXIT_STATUS=$?
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/speech-nodejs;artman --local --output_dir /tmp/speech-nodejs --config=google/cloud/speech/artman_speech_v1.yaml --root-dir=/googleapis generate nodejs_gapic" --generator-args='--dev_samples'|| EXIT_STATUS=$?
+            docker find /tmp/language-python/python/language-v1/samples/v1  mindepth 1 || read || EXIT_STATUS=$?
+            exit $EXIT_STATUS
   build_and_release_docker_image:
     working_directory: /usr/src/artman
     docker:
