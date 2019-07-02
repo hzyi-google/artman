@@ -88,10 +88,14 @@ jobs:
           name: Check samples are generated for selected APIs
           command: |
             EXIT_STATUS=0
-            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/language-python;artman --local --output-dir /tmp/language-python --config=google/cloud/language/artman_language_v1.yaml --root-dir=/googleapis generate python_gapic;find /tmp/language-python/python/language-v1/samples/v1  -mindepth 1 | read "|| EXIT_STATUS=$?
-            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/talent-php;artman --local --output-dir /tmp/talent-php --config=google/cloud/talent/artman_talent_v4beta1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate php_gapic;find /tmp/talent-php/php/google-cloud-talent-v4beta1/samples/V4beta1  -mindepth 1 | read" || EXIT_STATUS=$?
-            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/speech-nodejs;artman --local --output-dir /tmp/speech-nodejs --config=google/cloud/speech/artman_speech_v1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate nodejs_gapic;find /tmp/speech-nodejs/js/speech-v1/samples/v1  -mindepth 1 | read" || EXIT_STATUS=$?
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/language-python;artman --local --output-dir /tmp/language-python --config=google/cloud/language/artman_language_v1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate python_gapic" || EXIT_STATUS=$?
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True "find /tmp/language-python/python/language-v1/samples/v1  -mindepth 1 | read" || EXIT_STATUS=$?
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/talent-php;artman --local --output-dir /tmp/talent-php --config=google/cloud/talent/artman_talent_v4beta1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate php_gapic"|| EXIT_STATUS=$?
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True "find /tmp/talent-php/php/google-cloud-talent-v4beta1/samples/V4beta1  -mindepth 1 | read" || EXIT_STATUS=$?
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True --workdir /tmp artman /bin/bash -c "mkdir /tmp/speech-nodejs;artman --local --output-dir /tmp/speech-nodejs --config=google/cloud/speech/artman_speech_v1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate nodejs_gapic" || EXIT_STATUS=$?
+            docker run -it -e RUNNING_IN_ARTMAN_DOCKER=True "find /tmp/speech-nodejs/js/speech-v1/samples/v1  -mindepth 1 | read" || EXIT_STATUS=$?
             exit $EXIT_STATUS
+
   build_and_release_docker_image:
     working_directory: /usr/src/artman
     docker:
