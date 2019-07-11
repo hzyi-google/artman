@@ -88,7 +88,7 @@ jobs:
           name: Check samples are generated for selected APIs
           command: |
             EXIT_STATUS=0
-            docker run -it --rm -a STDOUT -a STDERR --name samplegen --workdir /tmp -e RUNNING_IN_ARTMAN_DOCKER=True artman
+            docker run -it --rm -d --name samplegen --workdir /tmp -e RUNNING_IN_ARTMAN_DOCKER=True artman
             docker exec samplegen mkdir /tmp/language-python
             docker exec samplegen artman --local --output-dir /tmp/language-python --config=google/cloud/language/artman_language_v1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate python_gapic
             docker exec samplegen find /root/language-python/python/language-v1/samples/v1 -mindepth 1 || EXIT_STATUS=$?
