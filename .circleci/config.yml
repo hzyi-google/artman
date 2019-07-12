@@ -248,6 +248,7 @@ workflows:
             - unit-python3.6
             - docs
             - golden_and_smoke_tests
+            - samplegen_smoke_test
           filters:
             branches:
               only: master
