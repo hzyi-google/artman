@@ -96,8 +96,8 @@ jobs:
             docker exec samplegen artman --local --output-dir /tmp/talent-php --config=google/cloud/talent/artman_talent_v4beta1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate php_gapic
             docker exec samplegen find /tmp/talent-php/php/google-cloud-talent-v4beta1/samples/V4beta1 -mindepth 1 || EXIT_STATUS=$?
             docker exec samplegen mkdir /tmp/speech-nodejs
-            docker exec samplegen artman --local --output-dir /tmp/speech-nodejs --config=google/cloud/speech/artman_speech_v1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate nodejs_gapic
-            docker exec samplegen find /tmp/speech-nodejs/js/speech-v1/samples/v1 -mindepth 1 || EXIT_STATUS=$?
+            docker exec samplegen artman --local --output-dir /tmp/speech-nodejs --config=google/cloud/speech/artman_speech_v1p1beta1.yaml --root-dir=/googleapis --generator-args='--dev_samples' generate nodejs_gapic
+            docker exec samplegen find /tmp/speech-nodejs/js/speech-v1p1beta1/samples/v1p1beta1 -mindepth 1 || EXIT_STATUS=$?
             docker stop samplegen
             exit $EXIT_STATUS
 
