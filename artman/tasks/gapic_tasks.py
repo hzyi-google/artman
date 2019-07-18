@@ -15,6 +15,7 @@
 
 import os
 import glob
+import tempfile
 from ruamel import yaml
 
 from artman.tasks import task_base
@@ -50,8 +51,9 @@ class DiscoGapicConfigGenTask(task_base.TaskBase):
     """Generates GAPIC config file from a Discovery document"""
     default_provides = 'gapic_config_path'
 
-    def execute(self, toolkit_path, discovery_doc,
-        output_dir, api_name, api_version, organization_name):
+    def execute(self, toolkit_path, discovery_doc, api_name,
+        api_version, organization_name):
+        output_dir = tempfile.mkdtemp()
         api_full_name = task_utils.api_full_name(
             api_name, api_version, organization_name)
         config_gen_dir = os.path.join(
