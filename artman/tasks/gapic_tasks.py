@@ -15,7 +15,6 @@
 
 import os
 import glob
-import tempfile
 from ruamel import yaml
 
 from artman.tasks import task_base
