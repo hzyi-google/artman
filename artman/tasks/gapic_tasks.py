@@ -53,7 +53,6 @@ class DiscoGapicConfigGenTask(task_base.TaskBase):
 
     def execute(self, toolkit_path, discovery_doc, api_name,
         api_version, organization_name):
-        output_dir = tempfile.mkdtemp()
         api_full_name = task_utils.api_full_name(
             api_name, api_version, organization_name)
         config_gen_dir = os.path.join(
