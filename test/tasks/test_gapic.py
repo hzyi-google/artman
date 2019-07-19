@@ -78,6 +78,7 @@ class DiscoGapicConfigGenTaskTests(unittest.TestCase):
             api_name='compute',
             api_version='v1',
             organization_name='google-cloud',
+            output_dir='/path/to/output',
             discovery_doc='/path/to/discovery_doc.json',
             toolkit_path='/path/to/toolkit',
         )
