@@ -274,7 +274,7 @@ def normalize_flags(flags, user_config):
     elif artifact_type == Artifact.DISCOGAPIC_CONFIG:
         pipeline_name = 'DiscoGapicConfigPipeline'
         pipeline_args['discovery_doc'] = artifact_config.discovery_doc
-        if flags.output_dir != os.path.abspath(DEFAULT_OUTPUT_DIR):
+        if os.path.abspath(flags.output_dir) != os.path.abspath(DEFAULT_OUTPUT_DIR):
             logger.warning("`output_dir` is ignored in DiscoGapicConfigGen. "
              + "Yamls are saved at the path specified by `gapic_yaml`.")
         pipeline_args['output_dir'] = tempfile.mkdtemp()
