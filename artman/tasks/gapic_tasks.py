@@ -106,7 +106,6 @@ class GapicCodeGenTask(task_base.TaskBase):
                 gapic_code_dir, api_name, api_version, organization_name,
                 aspect, samples, generator_args):
         existing = glob.glob('%s/*' % gapic_code_dir)
-
         if existing:
             self.exec_command(['rm', '-r'] + existing)
         gapic_args = []
