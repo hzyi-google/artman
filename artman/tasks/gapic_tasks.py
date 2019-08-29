@@ -13,8 +13,9 @@
 # limitations under the License.
 """Tasks related to generation of GAPIC wrappers"""
 
-import os
 import glob
+import os
+import shutil
 from ruamel import yaml
 
 from artman.tasks import task_base
@@ -106,10 +107,7 @@ class GapicCodeGenTask(task_base.TaskBase):
                 aspect, samples, generator_args):
         existing = glob.glob('%s/*' % gapic_code_dir)
 
-        # We put generated java code in a flattened directory `java/`. We don't clean
-        # up the output directory so that when generating multiple libraries the previously
-        # generated code will not be deleted
-        if language != 'java' and existing:
+        if existing:
             self.exec_command(['rm', '-r'] + existing)
         gapic_args = []
         if proto_package:
@@ -152,20 +150,15 @@ class GapicCodeGenTask(task_base.TaskBase):
         # Change Java gapics and samples to the correct directory names 
         if language == 'java':
             abs_code_dir = os.path.abspath(gapic_code_dir)
-
-            os.rename(
-                os.path.join(abs_code_dir, 'gapic'),
-                os.path.join(
-                    abs_code_dir,
-                    'gapic-google-cloud-{}-{}'.format(api_name, api_version)))
             
             # samples are optional
             abs_sample_dir = os.path.join(abs_code_dir, 'samples')
             if os.path.isdir(abs_sample_dir):
-                os.rename(
+                shutil.move(
                     abs_sample_dir,
                     os.path.join(
                         abs_code_dir,
+                        "..",
                         'samples-google-cloud-{}-{}'.format(api_name, api_version)))
 
         return gapic_code_dir

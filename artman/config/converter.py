@@ -84,7 +84,7 @@ def _calculate_rel_gapic_output_dir(language, api_name, api_version):
     # We output all code to the top-level 'java/' directory, but renames
     # sub-directories to the correct package names in GapicCodeGenTask.
     if language == 'java':
-        return 'java'
+        return 'java/gapic-google-cloud-%s-%s' % (api_name, api_version)
     elif language == 'csharp':
         return 'csharp/google-cloud-%s' % api_name
     elif language == 'go':
