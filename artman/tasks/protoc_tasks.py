@@ -15,6 +15,7 @@
 """Tasks related to protoc"""
 
 import io
+import json
 import os
 import re
 from ruamel import yaml
@@ -33,7 +34,7 @@ class ProtoDescGenTask(task_base.TaskBase):
 
     def execute(self, src_proto_path, import_proto_path, output_dir,
                 api_name, api_version, organization_name, toolkit_path,
-                root_dir, excluded_proto_path=[], proto_deps=[]):
+                root_dir, excluded_proto_path=[], proto_deps=[], language='python'):
         desc_proto_paths = []
         for dep in proto_deps:
             if 'proto_path' in dep and dep['proto_path']:
@@ -47,11 +48,16 @@ class ProtoDescGenTask(task_base.TaskBase):
             api_name, api_version, organization_name) + '.desc'
         logger.debug('Compiling descriptors for {0}'.format(desc_protos))
         self.exec_command(['mkdir', '-p', output_dir])
+
+        proto_params = protoc_utils.PROTO_PARAMS_MAP[language]
+
+        proto_compiler_command = proto_params.proto_compiler_command
+        logger.debug('Using protoc command: {0}'.format(proto_compiler_command))
         # DescGen doesn't use group protos by package right now because
         #   - it doesn't have to
         #   - and multiple invocation will overwrite the desc_out_file
         self.exec_command(
-            ['protoc'] +
+            proto_params.proto_compiler_command +
             protoc_utils.protoc_header_params(header_proto_path, toolkit_path) +
             protoc_utils.protoc_desc_params(output_dir, desc_out_file) +
             desc_protos)
@@ -245,18 +251,39 @@ class PhpGrpcRenameTask(task_base.TaskBase):
 
 
 class NodeJsProtoCopyTask(task_base.TaskBase):
-    """Copies the .proto files into the gapic_code_dir/proto directory.
+    """Copies the .proto files into the gapic_code_dir/proto directory
+    and compiles these proto files to protobufjs JSON.
     """
     def execute(self, gapic_code_dir, src_proto_path, excluded_proto_path=[]):
         final_output_dir = os.path.join(gapic_code_dir, 'protos')
+        src_dir = os.path.join(gapic_code_dir, 'src')
+        proto_files = []
         for proto_path in src_proto_path:
             index = protoc_utils.find_google_dir_index(proto_path)
             for src_proto_file in protoc_utils.find_protos(
                     [proto_path], excluded_proto_path):
                 relative_proto_file = src_proto_file[index:]
+                proto_files.append(relative_proto_file)
                 dst_proto_file = os.path.join(
                     final_output_dir, relative_proto_file)
                 dst_proto_dir = os.path.dirname(dst_proto_file)
                 if not os.path.exists(dst_proto_dir):
                     self.exec_command(['mkdir', '-p', dst_proto_dir])
                 self.exec_command(['cp', src_proto_file, dst_proto_file])
+        # Making transition to JSON protos simple:
+        # If this library has the list of protos for us, use it.
+        # Otherwise, just do its job and build this list.
+        # When all libraries start generating list of protos, the following code
+        # (up to the compileProtos execution) will be removed.
+        source_files = protoc_utils.list_files_recursive(src_dir)
+        proto_json_files = [filename for filename in source_files if re.match('_proto_list\\.json$', filename)]
+        if len(proto_json_files) == 0:
+            proto_list_file = os.path.join(src_dir, 'service_proto_list.json')
+            proto_files_relative = ['../protos/' + filename for filename in proto_files]
+            with open(proto_list_file, 'w') as pf:
+                pf.write(json.dumps(proto_files_relative))
+        # Execute compileProtos from Docker image (a part of from google-gax)
+        cwd = os.getcwd()
+        os.chdir(gapic_code_dir)
+        self.exec_command(['compileProtos', './src'])
+        os.chdir(cwd)

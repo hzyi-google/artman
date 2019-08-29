@@ -1,12 +1,12 @@
 FROM ubuntu:16.04
 
 # Release parameters
-ENV GOOGLEAPIS_HASH ab437f2bb2100360f8d119530b0a020228baa4cc
-ENV GAPIC_GENERATOR_HASH f8485e49b5e14b23ab266395cc13f3f89e1a0b10
+ENV GOOGLEAPIS_HASH 47bd0c2ba33c28dd624a65dad382e02bb61d1618
+ENV GAPIC_GENERATOR_HASH 3b120300c8da3f1e706e65d8edb1bbc7b5864f2b
 
 # Define version number below. The ARTMAN_VERSION line is parsed by
 # .circleci/config.yml and setup.py, please keep the format.
-ENV ARTMAN_VERSION 0.21.0
+ENV ARTMAN_VERSION 0.35.1
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -35,10 +35,6 @@ RUN apt-get update \
     python3-pip \
     # Java
     openjdk-8-jdk-headless \
-    # NodeJS
-    # This installs Node 4 on Ubuntu 16.04.
-    nodejs \
-    npm \
     # Ruby
     ruby \
     ruby-dev \
@@ -63,23 +59,24 @@ RUN apt-get update \
     libunwind8 \
     libuuid1 \
     zlib1g \
+    xz-utils \
   && rm -rf /var/lib/apt/lists/*
 
-# Install protoc 3.7.1.
-RUN mkdir -p /usr/src/protoc/ \
-  && curl --location https://github.com/google/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip > /usr/src/protoc/protoc.zip \
-  && cd /usr/src/protoc/ \
-  && unzip protoc.zip \
-  && rm protoc.zip \
-  && ln -s /usr/src/protoc/bin/protoc /usr/local/bin/protoc
+# Download and unpack Node.js v10
+RUN mkdir -p /opt \
+  && curl -L https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz -o /opt/node-v10.16.0-linux-x64.tar.xz \
+  && tar -C /opt -xJf /opt/node-v10.16.0-linux-x64.tar.xz \
+  && rm -f /opt/node-v10.16.0-linux-x64.tar.xz
+ENV PATH /opt/node-v10.16.0-linux-x64/bin:$PATH
 
-# Install GRPC and Protobuf.
-RUN pip3 install --upgrade pip==10.0.1 setuptools==39.2.0 \
-  && hash -r pip3 && pip3 install \
-    # Ensure that grpcio matches requirements.txt
-    grpcio==1.17.1 \
-    grpcio-tools==1.17.1 \
-    protobuf==3.7.1
+# Install google-gax for Node.js
+RUN npm install -g google-gax@^1.2.1
+# Run the compileProtos script for the first time to download runtime dependencies; ignore exit code
+RUN compileProtos || true
+
+# Install all required protoc versions, and install protobuf Python package.
+ADD install_protoc.sh /
+RUN bash install_protoc.sh
 
 # Install grpc_csharp_plugin
 RUN curl -L https://www.nuget.org/api/v2/package/Grpc.Tools/1.17.1 -o temp.zip \
@@ -90,10 +87,6 @@ RUN curl -L https://www.nuget.org/api/v2/package/Grpc.Tools/1.17.1 -o temp.zip \
 # Setup JAVA_HOME, this is useful for docker commandline
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
-
-# Ubuntu apt uses "nodejs" as the executable, but everything else expects
-# the executable to be spelled "node".
-RUN ln -s /usr/bin/nodejs /usr/local/bin/node
 
 # Install Go.
 RUN mkdir -p /golang \
