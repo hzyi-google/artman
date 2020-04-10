@@ -5,7 +5,7 @@ ENV GOOGLEAPIS_HASH e47fdd266542386e5e7346697f90476e96dc7ee8
 ENV GAPIC_GENERATOR_HASH 8d53d31494bebc1e1da4ed0d1352f1f35441d439
 # Define version number below. The ARTMAN_VERSION line is parsed by
 # .circleci/config.yml and setup.py, please keep the format.
-ENV ARTMAN_VERSION 1.1.0
+ENV ARTMAN_VERSION 1.2.0
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -129,7 +129,7 @@ RUN curl -L https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar -o /usr/loca
   && cd /
 
 # Used to add docstrings to the Python protoc output.
-RUN pip3 install protoc-docs-plugin==0.6.0
+RUN pip3 install protoc-docs-plugin==0.6.1
 
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 1.0.4
